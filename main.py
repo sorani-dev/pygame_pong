@@ -1,4 +1,6 @@
+from typing import List
 import pygame
+from pygame.surface import Surface
 
 # Initialize pygame
 pygame.init()
@@ -17,11 +19,41 @@ FPS = 60
 WHITE = (255, 255, 255,)
 BLACK = (0, 0, 0,)
 
+# Paddle
+PADDLE_WIDTH, PADDLE_HEIGHT = 20, 100
 
-def draw(win: pygame.surface.Surface):
+
+class Paddle():
+    """Paddle shape
+    """
+    COLOR = WHITE  # paddle color
+
+    def __init__(self, x: int, y: int, width: int, height: int) -> None:
+        """
+        Args:
+            x (int): x position
+            y (int): y position
+            width (int): paddle width
+            height (int): paddle height
+        """
+        self.x = x
+        self.y = y
+        self.height = height
+        self.width = width
+
+    def draw(self, win: pygame.surface.Surface) -> None:
+        pygame.draw.rect(win, self.COLOR,
+                         (self.x, self.y, self.width, self.height))
+
+
+def draw(win: pygame.surface.Surface, paddles: List[Paddle]):
     """Draw on the screen"""
     # Change screen background
     win.fill(BLACK)
+
+    # Draw paddles
+    for paddle in paddles:
+        paddle.draw(win)
 
     # Update display
     pygame.display.update()
@@ -35,12 +67,18 @@ def main():
     # make game run on same framerame on every computer
     clock = pygame.time.Clock()
 
+    # Paddles
+    left_paddle = Paddle(10, (HEIGHT//2)-(PADDLE_HEIGHT//2),
+                         PADDLE_WIDTH, PADDLE_HEIGHT)
+    right_paddle = Paddle(WIDTH-10-PADDLE_WIDTH, (HEIGHT//2)-(PADDLE_HEIGHT//2),
+                          PADDLE_WIDTH, PADDLE_HEIGHT)
+
     # Program main event loop
     while run:
         clock.tick(FPS)
 
         # Draw on screen
-        draw(WIN)
+        draw(WIN, [left_paddle, right_paddle])
 
         # Check events
         for event in pygame.event.get():
