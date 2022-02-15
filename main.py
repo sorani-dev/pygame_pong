@@ -73,6 +73,13 @@ def draw(win: pygame.surface.Surface, paddles: List[Paddle]):
     for paddle in paddles:
         paddle.draw(win)
 
+    # Draw a dotted line in the middle
+    for i in range(10, HEIGHT, HEIGHT//20):
+        # Do not draw on odd number
+        if i % 2 == 1:
+            continue
+        pygame.draw.rect(win, WHITE, (((WIDTH//2) - 5, i, 10, HEIGHT//20)))
+
     # Update display
     pygame.display.update()
 
@@ -82,7 +89,7 @@ def handle_paddle_movement(keys: Sequence[bool], left_paddle: Paddle, right_padd
 
     Args:
         keys (Sequence[bool]): Keys pressed
-        left_paddle (Paddle) 
+        left_paddle (Paddle)
         right_paddle (Paddle)
     """
     # Left paddle movement
