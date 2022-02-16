@@ -177,6 +177,9 @@ def main():
         keys = pygame.key.get_pressed()
         handle_paddle_movement(keys, left_paddle, right_paddle)
 
+        # Move the ball
+        ball.move()
+
     pygame.quit()
 
 
