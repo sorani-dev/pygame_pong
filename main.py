@@ -81,8 +81,8 @@ class Ball():
             y (int): y coordinate
            radius (int): ball radius
         """
-        self.x = x
-        self.y = y
+        self.x = self.original_x = x
+        self.y = self.original_y = y
         self.radius = radius
         self.x_velocity = self.MAX_VELOCITY
         self.y_velocity = 0.0
@@ -99,6 +99,13 @@ class Ball():
         """Move the ball"""
         self.x += self.x_velocity
         self.y += self.y_velocity
+
+    def reset(self) -> None:
+        """Reset the ball's position"""
+        self.x = self.original_x
+        self.y = self.original_y
+        self.x_velocity *= -1
+        self.y_velocity = 0
 
 
 def draw(win: pygame.surface.Surface, paddles: List[Paddle], ball: Ball, left_score: int, right_score: int):
@@ -250,9 +257,11 @@ def main():
         if ball.x < 0:
             # Left player
             right_score += 1
+            ball.reset()
         elif ball.x > WIDTH:
             # Right player
             left_score += 1
+            ball.reset()
 
     pygame.quit()
 
