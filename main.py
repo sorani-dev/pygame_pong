@@ -27,6 +27,8 @@ BALL_RADIUS = 7
 
 # Score font
 SCORE_FONT = pygame.font.SysFont("comicssans", 50)
+# Max score to win the game
+WINNING_SCORE = 10
 
 
 class Paddle():
@@ -43,8 +45,8 @@ class Paddle():
             width (int): paddle width
             height (int): paddle height
         """
-        self.x = x
-        self.y = y
+        self.x = self.original_x = x
+        self.y = self.original_y = y
         self.height = height
         self.width = width
 
@@ -68,6 +70,11 @@ class Paddle():
             self.y -= self.VELOCITY
         else:
             self.y += self.VELOCITY
+
+    def reset(self) -> None:
+        """Reset the paddle"""
+        self.x = self.original_x
+        self.y = self.original_y
 
 
 class Ball():
@@ -262,6 +269,31 @@ def main():
             # Right player
             left_score += 1
             ball.reset()
+
+        # Check win
+        won = False
+        win_text = ''
+        if left_score >= WINNING_SCORE:
+            won = True
+            win_text = "Left Player Won!"
+        elif right_score >= WINNING_SCORE:
+            won = True
+            win_text = "Right Player Won!"
+
+        if won:
+            # Show who won in the middle of the screen
+            text = SCORE_FONT.render(win_text, True, WHITE)
+            WIN.blit(text, (WIDTH//2 - text.get_width() //
+                     2, HEIGHT//2-text.get_height()//2))
+            pygame.display.update()
+            pygame.time.delay(5000)  # 5s
+
+            # Reset all
+            ball.reset()
+            left_paddle.reset()
+            right_paddle.reset()
+            left_score = 0
+            right_score = 0
 
     pygame.quit()
 
