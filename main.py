@@ -22,6 +22,9 @@ BLACK = (0, 0, 0,)
 # Paddle
 PADDLE_WIDTH, PADDLE_HEIGHT = 20, 100
 
+# Ball
+BALL_RADIUS = 7
+
 
 class Paddle():
     """Paddle shape
@@ -64,7 +67,38 @@ class Paddle():
             self.y += self.VELOCITY
 
 
-def draw(win: pygame.surface.Surface, paddles: List[Paddle]):
+class Ball():
+    """Ball"""
+    MAX_VELOCITY = 5  # Maximum ball velocity
+    COLOR = WHITE  # Ball color
+
+    def __init__(self, x: int, y: int, radius: int) -> None:
+        """Args:
+            x (int): x coordinate
+            y (int): y coordinate
+           radius (int): ball radius
+        """
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.x_velocity = self.MAX_VELOCITY
+        self.y_velocity = 0
+
+    def draw(self, win: Surface):
+        """Draw ball on the screen
+
+        Args:
+            win (Surface)
+        """
+        pygame.draw.circle(win, self.COLOR, (self.x, self.y), self.radius)
+
+    def move(self):
+        """Move the ball"""
+        self.x += self.x_velocity
+        self.y += self.y_velocity
+
+
+def draw(win: pygame.surface.Surface, paddles: List[Paddle], ball: Ball):
     """Draw on the screen"""
     # Change screen background
     win.fill(BLACK)
@@ -79,6 +113,9 @@ def draw(win: pygame.surface.Surface, paddles: List[Paddle]):
         if i % 2 == 1:
             continue
         pygame.draw.rect(win, WHITE, (((WIDTH//2) - 5, i, 10, HEIGHT//20)))
+
+    # Draw the ball
+    ball.draw(win)
 
     # Update display
     pygame.display.update()
@@ -116,15 +153,18 @@ def main():
     # Paddles
     left_paddle = Paddle(10, (HEIGHT//2)-(PADDLE_HEIGHT//2),
                          PADDLE_WIDTH, PADDLE_HEIGHT)
-    right_paddle = Paddle(WIDTH-10-PADDLE_WIDTH, (HEIGHT//2)-(PADDLE_HEIGHT//2),
-                          PADDLE_WIDTH, PADDLE_HEIGHT)
+    right_paddle = Paddle(WIDTH-10-PADDLE_WIDTH, (HEIGHT//2) -
+                          (PADDLE_HEIGHT//2), PADDLE_WIDTH, PADDLE_HEIGHT)
+
+    # Ball
+    ball = Ball(WIDTH//2, HEIGHT//2, BALL_RADIUS)
 
     # Program main event loop
     while run:
         clock.tick(FPS)
 
         # Draw on screen
-        draw(WIN, [left_paddle, right_paddle])
+        draw(WIN, [left_paddle, right_paddle], ball)
 
         # Check events
         for event in pygame.event.get():
