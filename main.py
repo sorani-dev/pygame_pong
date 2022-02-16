@@ -82,7 +82,7 @@ class Ball():
         self.y = y
         self.radius = radius
         self.x_velocity = self.MAX_VELOCITY
-        self.y_velocity = 0
+        self.y_velocity = 0.0
 
     def draw(self, win: Surface):
         """Draw ball on the screen
@@ -119,6 +119,55 @@ def draw(win: pygame.surface.Surface, paddles: List[Paddle], ball: Ball):
 
     # Update display
     pygame.display.update()
+
+
+def handle_collision(ball: Ball, left_paddle: Paddle, right_paddle: Paddle) -> None:
+    """Manage collising between the ball and the paddles or the walls
+
+    Args:
+        ball (Ball): the ball
+        left_paddle (Paddle)
+        right_paddle (Paddle)
+    """
+    # Ceiling (reverse direction)
+    if ball.y+ball.radius >= HEIGHT:
+        ball.y_velocity *= -1
+    # Floor (reverse direction)
+    elif ball.y-ball.radius <= 0:
+        ball.y_velocity *= -1
+
+    # Left side
+    if ball.x_velocity < 0:
+        # Left paddle
+        if ball.y >= left_paddle.y and ball.y <= left_paddle.y + left_paddle.height:
+            if ball.x - ball.radius <= left_paddle.x + left_paddle.width:
+                # Reverse the y direction
+                ball.x_velocity *= -1
+
+                # Where is the ball colliding on the paddle?
+                middle_y = left_paddle.y + left_paddle.height / 2
+                difference_in_y_paddle = middle_y - ball.y
+                # how mutch does the ball need to reduce its speed based on its position on the paddle
+                reduction_factor = (left_paddle.height / 2) / ball.MAX_VELOCITY
+                y_velocity = difference_in_y_paddle / reduction_factor
+                # Set the ball velocity
+                ball.y_velocity = y_velocity * -1
+    else:
+        # Right paddle
+        if ball.y >= right_paddle.y and ball.y <= right_paddle.y + right_paddle.height:
+            if ball.x + ball.radius >= right_paddle.x:
+                # Reverse the y direction
+                ball.x_velocity *= -1
+
+                # Where is the ball colliding on the paddle?
+                middle_y = right_paddle.y + right_paddle.height / 2
+                difference_in_y_paddle = middle_y - ball.y
+                # how mutch does the ball need to reduce its speed based on its position on the paddle
+                reduction_factor = (right_paddle.height /
+                                    2) / ball.MAX_VELOCITY
+                y_velocity = difference_in_y_paddle / reduction_factor
+                # Set the ball velocity
+                ball.y_velocity = y_velocity * -1
 
 
 def handle_paddle_movement(keys: Sequence[bool], left_paddle: Paddle, right_paddle: Paddle) -> None:
@@ -179,6 +228,8 @@ def main():
 
         # Move the ball
         ball.move()
+        # Ball collision?
+        handle_collision(ball, left_paddle, right_paddle)
 
     pygame.quit()
 
