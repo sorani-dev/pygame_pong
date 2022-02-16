@@ -25,6 +25,9 @@ PADDLE_WIDTH, PADDLE_HEIGHT = 20, 100
 # Ball
 BALL_RADIUS = 7
 
+# Score font
+SCORE_FONT = pygame.font.SysFont("comicssans", 50)
+
 
 class Paddle():
     """Paddle shape
@@ -98,10 +101,18 @@ class Ball():
         self.y += self.y_velocity
 
 
-def draw(win: pygame.surface.Surface, paddles: List[Paddle], ball: Ball):
+def draw(win: pygame.surface.Surface, paddles: List[Paddle], ball: Ball, left_score: int, right_score: int):
     """Draw on the screen"""
     # Change screen background
     win.fill(BLACK)
+
+    # Draw scores
+    left_score_text = SCORE_FONT.render(f"{left_score}", True, WHITE)
+    right_score_text = SCORE_FONT.render(f"{right_score}", True, WHITE)
+
+    win.blit(left_score_text, (WIDTH//4 - left_score_text.get_width()//2, 20))
+    win.blit(right_score_text, (WIDTH * (3/4) -
+             right_score_text.get_width()//2, 20))
 
     # Draw paddles
     for paddle in paddles:
@@ -208,12 +219,16 @@ def main():
     # Ball
     ball = Ball(WIDTH//2, HEIGHT//2, BALL_RADIUS)
 
+    # Score
+    left_score = 0
+    right_score = 0
+
     # Program main event loop
     while run:
         clock.tick(FPS)
 
         # Draw on screen
-        draw(WIN, [left_paddle, right_paddle], ball)
+        draw(WIN, [left_paddle, right_paddle], ball, left_score, right_score)
 
         # Check events
         for event in pygame.event.get():
@@ -230,6 +245,14 @@ def main():
         ball.move()
         # Ball collision?
         handle_collision(ball, left_paddle, right_paddle)
+
+        # Check the score
+        if ball.x < 0:
+            # Left player
+            right_score += 1
+        elif ball.x > WIDTH:
+            # Right player
+            left_score += 1
 
     pygame.quit()
 
