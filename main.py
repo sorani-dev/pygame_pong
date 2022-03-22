@@ -147,7 +147,7 @@ def draw(win: pygame.surface.Surface, paddles: List[Paddle], ball: Ball, left_sc
 
 
 def handle_collision(ball: Ball, left_paddle: Paddle, right_paddle: Paddle) -> None:
-    """Manage collising between the ball and the paddles or the walls
+    """Manage collision between the ball and the paddles or the walls
 
     Args:
         ball (Ball): the ball
@@ -172,7 +172,7 @@ def handle_collision(ball: Ball, left_paddle: Paddle, right_paddle: Paddle) -> N
                 # Where is the ball colliding on the paddle?
                 middle_y = left_paddle.y + left_paddle.height / 2
                 difference_in_y_paddle = middle_y - ball.y
-                # how mutch does the ball need to reduce its speed based on its position on the paddle
+                # how much does the ball need to reduce its speed based on its position on the paddle
                 reduction_factor = (left_paddle.height / 2) / ball.MAX_VELOCITY
                 y_velocity = difference_in_y_paddle / reduction_factor
                 # Set the ball velocity
@@ -187,7 +187,7 @@ def handle_collision(ball: Ball, left_paddle: Paddle, right_paddle: Paddle) -> N
                 # Where is the ball colliding on the paddle?
                 middle_y = right_paddle.y + right_paddle.height / 2
                 difference_in_y_paddle = middle_y - ball.y
-                # how mutch does the ball need to reduce its speed based on its position on the paddle
+                # how much does the ball need to reduce its speed based on its position on the paddle
                 reduction_factor = (right_paddle.height /
                                     2) / ball.MAX_VELOCITY
                 y_velocity = difference_in_y_paddle / reduction_factor
@@ -221,7 +221,7 @@ def main():
     # Is the game running?
     run = True
 
-    # Make game run on same framerame on every computer
+    # Make game run on same frame rate on every computer
     clock = pygame.time.Clock()
 
     # Paddles
